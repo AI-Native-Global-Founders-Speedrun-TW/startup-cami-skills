@@ -16,7 +16,7 @@ export default function About({defaultLocale='en',forcedLocale=null}){
  const change=value=>{try{saveDisplayLocale(window.localStorage,value);}catch{}setLocale(value);};
  return <main className={styles.page} lang={locale}>
   <nav className={styles.nav} aria-label={locale==='zh-TW'?'頁面導覽':'Page navigation'}><a href="/">← {t.back}</a><label>{t.language}<select value={locale} onChange={e=>change(e.target.value)}><option value="en">English</option><option value="zh-TW">繁體中文</option></select></label></nav>
-  <header className={styles.hero}><p className={styles.eyebrow}>Cami / {t.eyebrow}</p><h1>{t.title}</h1><p className={styles.intro}>{t.intro}</p></header>
+  <header className={styles.hero}><p className={styles.eyebrow}>Cami Startup Canvas / {t.eyebrow}</p><h1>{t.title}</h1><p className={styles.intro}>{t.intro}</p></header>
   <section className={styles.credits} aria-label={t.creditTitle}>
    <article className={styles.card}><p className={styles.role}>{t.course}</p><h2>{t.cami}</h2><figure className={styles.photo}>
     <Image src={portrait} unoptimized alt={locale==='en'?'Cami Lu speaking at Capsule Launcher':'Cami 在 Capsule Launcher 論壇發表演講'} />

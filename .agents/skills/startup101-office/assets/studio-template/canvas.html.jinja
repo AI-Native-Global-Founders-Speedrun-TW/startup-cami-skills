@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cami</title>
-<meta name="description" content="Facilitation for Cami — an interactive founder canvas.">
+<title>Cami Startup Canvas</title>
+<meta name="description" content="Facilitation for Cami Startup Canvas — an interactive founder canvas.">
 <style>
 /* Startup 101 Studio — Studio free-collage workshop.
    Tokens follow spec 一「色票」. Text and inputs stay horizontal; only paper decoration tilts. */
@@ -670,7 +670,7 @@ html:lang(en) .canvas-credits [lang="zh-TW"],html:lang(zh-TW) .canvas-credits [l
 
 <header class="toolbar" role="banner">
   <div class="brand">
-    <span class="brand-name">Cami</span>
+    <span class="brand-name">Cami Startup Canvas</span>
     <span class="brand-sub">Facilitation for Cami</span>
   </div>
   <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
@@ -1154,7 +1154,7 @@ window.STARTUP101_CLUSTERS = window.STARTUP101_MODEL?.clusters || {"status": "ap
 
 </script>
 <script>
-/* Cami — read-only YAML snapshot.
+/* Cami Startup Canvas — read-only YAML snapshot.
    Vanilla JS, no build step. Data comes from data.js (generated from the question manifest).
    Spec: plans/000-facilitation-canvas/互動Canvas視覺與體驗Spec.md */
 (() => {
@@ -1274,7 +1274,7 @@ window.STARTUP101_CLUSTERS = window.STARTUP101_MODEL?.clusters || {"status": "ap
     stage.append(box);
     $('#retry-load').onclick = () => { box.remove(); loadData(true); };
     $('#error-summary').onclick = () => download('startup101-load-error.txt', 'text/plain',
-      `Cami could not load its questions.\nTime: ${now()}\nPage: ${location.href}\nError: ${err && err.message}\nUser agent: ${navigator.userAgent}\n`);
+      `Cami Startup Canvas could not load its questions.\nTime: ${now()}\nPage: ${location.href}\nError: ${err && err.message}\nUser agent: ${navigator.userAgent}\n`);
   }
 
   // =====================================================================
@@ -1538,7 +1538,7 @@ window.STARTUP101_CLUSTERS = window.STARTUP101_MODEL?.clusters || {"status": "ap
       const status = ({accepted:'answered',saved:'saved',unreviewed:'draft',needs_review:'revisit',unverifiable:'unverifiable'})[recordStatus] || 'draft';
       answers[id] = {...a, text:a.text || '', status, recordStatus, evidence:(a.claims || []).map(c=>({text:c.text || c.claim || '',state:c.evidence_status || c.status || 'reported',source_refs:c.source_refs || []}))};
     }
-    S.venture = {name:m.project.name || m.project.title || 'Cami', answers, ui:{route:{on:false,index:0,branch:null},visited:[],history:[],exampleSeen:{}}};
+    S.venture = {name:m.project.name || m.project.title || 'Cami Startup Canvas', answers, ui:{route:{on:false,index:0,branch:null},visited:[],history:[],exampleSeen:{}}};
     return true;
   }
   function answerOf(id) { return S.venture.answers[id] || {text:'',status:'not-answered',recordStatus:'not-answered',evidence:[],scores:{}}; }
