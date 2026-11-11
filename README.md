@@ -89,7 +89,7 @@ uv run web/build_template.py --output .agents/skills/startup-cami-office/assets/
 
 ## 致謝
 
-感謝 [Cami Lu 呂緗柔](https://www.linkedin.com/in/camillialu/)。Cami 做投資，同時也做加速器，[STARTUP101](https://www.startup101.biz/) 是她的產出之一。
+感謝 [Cami Lu 呂緗柔](https://www.linkedin.com/in/camillialu/)。Cami 是 [STARTUP101](https://www.startup101.biz/) 的執行長，同時也有在做投資跟加速器。
 
 Skills 與 Canvas 由 [AI-Native Global Founders Speedrun Taiwan 社群](https://aifounders.tw/) 投入製作。
 
