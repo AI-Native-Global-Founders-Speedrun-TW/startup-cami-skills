@@ -69,10 +69,11 @@ def main():
    en_about=about('?locale=en');zh_about=about('?locale=zh-TW')
    for page in (en_about,zh_about):
     assert 'Cami Lu' in page and 'aifounders.tw' in page
-    assert 'https://www.startup101.biz/' in page
+    assert 'https://www.startup101.biz/' not in page and '華陽' not in page   # 不放 STARTUP101 推介區塊（商標與公益原則）
     assert 'www.linkedin.com/in/camillialu/' in page
     assert 'cami.works' not in page
    assert '教材貢獻自 Cami 的簡報' in visible(zh_about)
+   assert 'STARTUP101 是她的產出之一' in visible(zh_about) and 'STARTUP101 is one of her outputs' in visible(en_about)
    assert 'Skill 由 aifounders.tw 社群投入製作' in visible(zh_about)
    assert 'Course material contributed from Cami' in visible(en_about)
    assert 'Back to canvas' in visible(en_about) and '回到畫布' in visible(zh_about)
