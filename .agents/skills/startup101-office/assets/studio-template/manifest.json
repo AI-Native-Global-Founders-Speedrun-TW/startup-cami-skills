@@ -15,7 +15,7 @@
   "assets": [
     {
       "path": "canvas.html.jinja",
-      "sha256": "48fdeeef7846e05961bc5156b1975c3ab5bf232905931ff57229c3dec98cf67c",
+      "sha256": "01c6b49a55de908517b677f9fc946e0aef38b47ff533d9a7ddadcd840f6d3a5f",
       "required": true
     },
     {

@@ -1,1 +1,1 @@
-export const metadata={title:'Startup 101 Canvas'}; export default function Layout({children}) {return <html lang="en"><body style={{margin:0}}>{children}</body></html>;}
+export const metadata={title:'Cami'}; export default function Layout({children}) {return <html lang="en"><body style={{margin:0}}>{children}</body></html>;}
