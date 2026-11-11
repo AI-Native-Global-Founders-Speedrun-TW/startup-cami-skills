@@ -1,0 +1,27 @@
+{
+  "template_api_version": 1,
+  "version": "studio-readonly-9-all-headlines",
+  "entry": "canvas.html.jinja",
+  "document_schema_versions": [
+    2
+  ],
+  "readonly": true,
+  "offline": true,
+  "presentation": {
+    "path": "clusters.json",
+    "schema_version": 1,
+    "source_sha256": "9a6c6babde8913c5d51374224a03e7161a47cefac22edf74c14098f841aef89b"
+  },
+  "assets": [
+    {
+      "path": "canvas.html.jinja",
+      "sha256": "48fdeeef7846e05961bc5156b1975c3ab5bf232905931ff57229c3dec98cf67c",
+      "required": true
+    },
+    {
+      "path": "clusters.json",
+      "sha256": "8def05b4cd394bf40c303a02ec6ed266f5130eb97efcad46d16d44a6fff02281",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "version": "1.0.0",
+  "dimensions": {
+    "clarity": {
+      "label": "清楚",
+      "anchors": {
+        "0": "無可辨識主張或歧義使意思無法判斷",
+        "1": "可辨識主張但對象、範圍或指涉有實質歧義",
+        "2": "對象、主張及範圍可無歧義理解"
+      }
+    },
+    "specificity": {
+      "label": "具體",
+      "anchors": {
+        "0": "只有口號或缺全部必要資訊",
+        "1": "部分具體但缺本題必要情境、數值定義或判準",
+        "2": "本題 required parts 所需的具體資訊完整；不強求無關數字"
+      }
+    },
+    "relevance": {
+      "label": "相關",
+      "anchors": {
+        "0": "回答別的題目",
+        "1": "只回答本題部分必要內容或混入解法代替現況",
+        "2": "直接回答本題所有適用必要部分"
+      }
+    },
+    "consistency": {
+      "label": "自洽",
+      "anchors": {
+        "0": "主張與自己、已知 context 或證據直接矛盾",
+        "1": "存在未解的推論跳躍或證據範圍誇大",
+        "2": "無實質矛盾，主張強度符合所標示的證據與類型"
+      }
+    }
+  },
+  "pass_rule": "四維皆2、適用required parts全滿足、無blocker、候選與packet一致；不是創業成功分數。",
+  "answer_kind_rules": {
+    "fact": "可為具體自述但須標 reported 與來源範圍；外部來源讀過才 source_checked。",
+    "hypothesis": "明示尚未證實，說明對象、主張及可改變判斷的觀察；不可用來完成只允許fact的題。",
+    "decision": "明示選擇、範圍與理由；不得冒充已取得成果。",
+    "reflection": "忠實呈現自己的立場、限制與理由；拒絕加班、不認同AI或不願披露私事不是人格扣分。"
+  },
+  "evidence_statuses": [
+    "not_applicable",
+    "hypothesis",
+    "reported",
+    "source_checked",
+    "contradicted"
+  ]
+}

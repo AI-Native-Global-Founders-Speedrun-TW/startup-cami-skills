@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Startup 101 Canvas</title>
+<meta name="description" content="Facilitation for Cami — an interactive founder canvas.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#outline" data-action="open-outline"><span data-i18n="Open question list">Open question list</span></a>
+
+<header class="toolbar" role="banner">
+  <div class="brand">
+    <span class="brand-name">Startup 101 Canvas</span>
+    <span class="brand-sub">Facilitation for Cami</span>
+  </div>
+  <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+  <div class="search" role="search">
+    <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+    <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+      placeholder="Search questions, categories, or your answers" data-i18n-placeholder="Search questions, categories, or your answers"
+      aria-label="Search questions" data-i18n-aria-label="Search questions" aria-controls="search-results" aria-expanded="false" aria-autocomplete="list" role="combobox">
+    <div class="search-results" id="search-results" role="listbox" aria-label="Search results" data-i18n-aria-label="Search results" hidden></div>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn btn-ghost" id="outline-btn" type="button" aria-label="Browse categories" data-i18n-aria-label="Browse categories" aria-controls="outline" aria-expanded="false">
+      <svg class="i" aria-hidden="true"><use href="#i-outline"/></svg><span><span data-i18n="Browse categories">Browse categories</span></span></button>
+    <div class="menu-wrap">
+      <button class="btn btn-ghost" id="export-btn" type="button" aria-label="More options" data-i18n-aria-label="More options" aria-haspopup="true" aria-expanded="false" aria-controls="export-menu">
+        <svg class="i" aria-hidden="true"><use href="#i-chevdown"/></svg><span><span data-i18n="More options">More options</span></span>
+        </button>
+      <div class="menu" id="export-menu" hidden>
+        <button id="previous-answered" type="button" class="menu-item" data-i18n="Previous answered">Previous answered</button>
+        <button type="button" id="all-notes" class="menu-item" data-action="open-notes" data-i18n="Interview notes">Interview notes</button>
+        <button type="button" hidden id="offline-about-open" class="menu-item" data-i18n="About">About</button>
+        <label class="menu-item language-control"><span data-i18n="Language">Language</span> <select id="language-select"><option value="en">English</option><option value="zh-TW">繁體中文</option></select></label>
+        <details class="export-options"><summary data-i18n="Context">Context</summary>
+        <label class="check"><input type="checkbox" id="answered-only"> <span data-i18n="Accepted answers only">Accepted answers only</span></label>
+        <button type="button" class="menu-item" data-action="copy-context"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="Copy as context">Copy as context</span></button>
+        <button type="button" class="menu-item" data-action="download-md"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg><span data-i18n="Download context copy">Download context copy</span></button>
+        </details>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="progress-summary" class="progress-summary" aria-label="Answer progress" data-i18n-aria-label="Answer progress"></section>
+
+<main class="stage" id="stage" aria-label="Question map" data-i18n-aria-label="Question map">
+  <div class="loading" id="loading" hidden>
+    <div class="loading-cards" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p><span data-i18n="Preparing your canvas…">Preparing your canvas…</span></p>
+  </div>
+  <svg class="world-svg" id="world-svg" aria-hidden="true">
+    <defs>
+      <pattern id="halftone" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.1" fill="#24211D" opacity=".18"/></pattern>
+    </defs>
+    <g id="g-collage"></g>
+    <g id="g-roads"></g>
+    <g id="g-art"></g>
+    <g id="g-links"></g>
+  </svg>
+  <div class="world" id="world"></div>
+  <div class="link-labels" id="link-labels" aria-hidden="true"></div>
+
+  <nav class="signs" id="signs" aria-label="Nearby areas" data-i18n-aria-label="Nearby areas"></nav>
+  <div class="tips" id="tips"></div>
+
+  <div class="guide" id="guide" role="region" aria-label="Suggested route" data-i18n-aria-label="Suggested route"></div>
+
+  <div class="zoom" role="group" aria-label="Map view" data-i18n-aria-label="Map view">
+    <button class="icon-btn" type="button" data-action="zoom-out" aria-label="Zoom out" data-i18n-aria-label="Zoom out"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+    <output class="zoom-level" id="zoom-level" aria-live="off">72%</output>
+    <button class="icon-btn" type="button" data-action="zoom-in" aria-label="Zoom in" data-i18n-aria-label="Zoom in"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+    <span class="sep" aria-hidden="true"></span>
+    <button class="btn btn-ghost btn-sm" type="button" data-action="overview" id="overview-btn"><svg class="i" aria-hidden="true"><use href="#i-overview"/></svg><span data-i18n="Overview">Overview</span></button>
+    <button class="icon-btn" type="button" data-action="back-to-question" id="back-to-q" aria-label="Back to question" data-i18n-aria-label="Back to question" title="Back to question" data-i18n-title="Back to question"><svg class="i" aria-hidden="true"><use href="#i-target"/></svg></button>
+  </div>
+
+  <div class="minimap" id="minimap">
+    <canvas id="minimap-canvas" width="160" height="120" aria-hidden="true"></canvas>
+    <span class="sr-only"><span data-i18n="Mini map. Use Overview or the question list to move around.">Mini map. Use Overview or the question list to move around.</span></span>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+<footer class="canvas-credits">
+  <div><span><strong>Cami Lu 呂緗柔</strong><small lang="zh-TW">教學知識貢獻自 Cami Lu</small><small lang="en">Teaching insights from Cami Lu</small></span></div>
+  <div><span><strong>aifounders.tw</strong><small lang="zh-TW">Skill 由社群投入製作</small><small lang="en">Skills by the community</small></span></div>
+</footer>
+
+<aside class="panel" id="panel" aria-label="Question" data-i18n-aria-label="Question" hidden></aside>
+<aside class="outline" id="outline" aria-label="Question list" data-i18n-aria-label="Question list" hidden></aside>
+<div class="preview" id="preview" role="tooltip" hidden></div>
+<div class="dialog-layer" id="dialog-layer" hidden></div>
+
+<script src="art.js"></script>
+<script src="data.js"></script>
+<script src="i18n-data.js"></script>
+<script src="i18n.js"></script>
+<script src="clusters-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

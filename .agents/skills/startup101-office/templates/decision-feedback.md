@@ -1,0 +1,25 @@
+# 本題與當前決策
+
+<!-- 依共用reference逐步展開：每輪保留verdict、誠實狀態、單一下一步及實際保存；其他欄只在初次需要、內容改變或有新分歧時呈現。不要把placeholder原樣交付。 -->
+
+回答評估：{{ANSWER_VERDICT_AND_SCORES}}
+
+當前決策：{{CURRENT_DECISION_OR_UNSPECIFIED}}
+
+有／沒有／不知道／尚未驗證：{{HONEST_STATUS_WITH_SOURCE}}
+
+這份回答支持：{{SUPPORTED_SCOPE}}
+
+仍缺少：{{MISSING_EVIDENCE}}
+
+會改變判斷的資訊：{{WHAT_CHANGES_DECISION}}
+
+{{REVIEW_STATUS_AND_UNRESOLVED_REASONS_OR_EMPTY}}
+
+{{OLD_NEW_QUOTES_AND_CONFIRMATION_OR_EMPTY}}
+
+下一步：{{ONE_QUESTION_OR_EXTERNAL_EXPERIMENT}}
+
+訪談筆記：{{MARKDOWN_PATH_AND_NOTE_ID_OR_WRITE_FAILURE}}
+
+單題回答：{{ACTUAL_ACCEPTANCE_STATUS}}

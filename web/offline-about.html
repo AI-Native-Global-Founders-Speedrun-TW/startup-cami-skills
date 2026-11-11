@@ -1,0 +1,24 @@
+<style>
+:lang(en) > .zh-copy, :lang(zh-TW) > .en-copy {display:none}
+#offline-about {width:min(92vw,740px);max-height:85vh;overflow:auto;border:1px solid #bcad90;border-radius:8px;background:#fff9e9;color:#24211d;padding:24px}
+#offline-about::backdrop {background:#28251b88}
+#offline-about .credits {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:20px}
+#offline-about img {display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px}
+</style>
+<dialog id="offline-about" aria-labelledby="about-title">
+<h2 id="about-title"><span class="zh-copy">關於這張畫布</span><span class="en-copy">About this canvas</span></h2>
+<div class="credits">
+<section><h3>Cami Lu 呂緗柔</h3><p><span class="zh-copy">教學知識貢獻自 Cami Lu</span><span class="en-copy">Teaching insights from Cami Lu.</span></p></section>
+<section><h3>aifounders.tw</h3><p><span class="zh-copy">Skill 由 aifounders.tw 社群投入製作</span><span class="en-copy">Skill developed by the aifounders.tw community.</span></p><a href="https://aifounders.tw/"><span class="zh-copy">社群首頁主視覺</span><span class="en-copy">Community homepage hero</span></a></section></div>
+<form method="dialog"><button class="btn"><span class="zh-copy">回到畫布</span><span class="en-copy">Back to canvas</span></button></form></dialog>
+<script>
+const openAbout = document.getElementById('offline-about-open');
+openAbout.hidden = false;
+openAbout.onclick = () => {
+  if (window.self !== window.top) {
+    window.parent.postMessage({type:'startup101:about'}, window.origin);
+  } else {
+    document.getElementById('offline-about').showModal();
+  }
+};
+</script>
