@@ -2,6 +2,10 @@
 
 用 AI 陪創業者把問題想清楚，將回答、headlines 與評估保存在本地 YAML，再透過 Canvas 閱讀。介面支援繁體中文與英文。
 
+[![觀看 Startup 101 Canvas 影片](https://img.youtube.com/vi/eubF-YPKhfU/hqdefault.jpg)](https://www.youtube.com/watch?v=eubF-YPKhfU)
+
+[▶ 在 YouTube 觀看影片](https://www.youtube.com/watch?v=eubF-YPKhfU)
+
 ## 包含哪些 Skills
 
 | Skill | 使用時機與工作 |
