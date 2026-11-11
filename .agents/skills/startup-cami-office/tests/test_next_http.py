@@ -73,7 +73,7 @@ def main():
     assert 'www.linkedin.com/in/camillialu/' in page
     assert 'cami.works' not in page
    assert '教材貢獻自 Cami 的簡報' in visible(zh_about)
-   assert 'STARTUP101 是她的產出之一' in visible(zh_about) and 'STARTUP101 is one of her outputs' in visible(en_about)
+   assert 'Cami 是 STARTUP101 的執行長' in visible(zh_about) and 'Cami is the CEO of STARTUP101' in visible(en_about)
    assert 'Skill 由 aifounders.tw 社群投入製作' in visible(zh_about)
    assert 'Course material contributed from Cami' in visible(en_about)
    assert 'Back to canvas' in visible(en_about) and '回到畫布' in visible(zh_about)
