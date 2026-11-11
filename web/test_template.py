@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--bundle', type=Path, required=True)
     args = parser.parse_args()
     web = Path(__file__).resolve().parent
-    catalog = json.loads((web.parent/'.agents/skills/startup101-office/assets/catalog.json').read_text())
+    catalog = json.loads((web.parent/'.agents/skills/startup-cami-office/assets/catalog.json').read_text())
     manifest = json.loads((args.bundle/'manifest.json').read_text())
     for asset in manifest['assets']:
         assert hashlib.sha256((args.bundle/asset['path']).read_bytes()).hexdigest() == asset['sha256']
@@ -35,7 +35,7 @@ def main():
     html=env.get_template(manifest['entry']).render(model=model,model_json=Markup(encoded))
     assert '<script>alert(99)</script>' not in html
     assert not re.search(r'<script[^>]+src=|<link[^>]+href=',html)
-    assert 'STARTUP101_READONLY' in html
+    assert 'STARTUP_CAMI_READONLY' in html
     for forbidden in ['localStorage','id="answer-text"','data-action="import-json"','data-action="new-venture"','data-action="use-structure"','data-action="download-json"']:
         assert forbidden not in html, forbidden
     assert 'Previous evaluation — no longer current or not verifiable' in html

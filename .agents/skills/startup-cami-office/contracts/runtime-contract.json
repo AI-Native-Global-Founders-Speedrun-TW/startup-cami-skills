@@ -1,0 +1,363 @@
+{
+  "schema_version": 2,
+  "cli": {
+    "prefix": "uv run scripts/startup_cami.py --project PATH",
+    "commands": {
+      "init": [
+        "--title TITLE",
+        "--locale en|zh-TW"
+      ],
+      "inspect": [],
+      "validate": [],
+      "set-next": [
+        "--question ID",
+        "--expected-revision INTEGER",
+        "--expected-source-sha256 SHA256"
+      ],
+      "note": [
+        "--turn-id ID",
+        "--text-file EDITED_NOTE_PATH",
+        "--expected-revision INTEGER",
+        "--question ID (optional, repeatable)",
+        "--expected-source-sha256 SHA256"
+      ],
+      "draft": [
+        "--question ID",
+        "--turn-id ID (required; existing edited note)",
+        "--text-file PATH (optional exact contiguous excerpt; defaults to full edited note)",
+        "--sources-file PATH (optional)",
+        "--expected-source-sha256 SHA256"
+      ],
+      "evaluate-input": [
+        "--question ID",
+        "--kind fact|hypothesis|decision|reflection",
+        "--candidate-file PATH (optional)",
+        "--confirmed (required for rewritten candidate)",
+        "--dependency ID (repeatable)",
+        "--review-policy single|independent (optional; default single; chosen before first recorded verdict for the user turn)",
+        "--expected-source-sha256 SHA256"
+      ],
+      "accept": [
+        "--evaluation PATH",
+        "--expected-revision INTEGER",
+        "--expected-source-sha256 SHA256"
+      ],
+      "recover": [],
+      "render": [
+        "--template-bundle PATH",
+        "--locale en|zh-TW (optional)",
+        "--include-html (optional; local view transport)"
+      ],
+      "record-evaluation": [
+        "--evaluation PATH",
+        "--expected-source-sha256 SHA256"
+      ],
+      "session-action": [
+        "--question ID",
+        "--action defer|skip|resume",
+        "--reason TEXT",
+        "--expected-source-sha256 SHA256"
+      ],
+      "record-review": [
+        "--review PATH",
+        "--expected-source-sha256 SHA256"
+      ],
+      "record-decision": [
+        "--assessment PATH",
+        "--expected-source-sha256 SHA256"
+      ],
+      "migrate-yaml": [
+        "--apply (optional; default dry run)"
+      ],
+      "migrate-name": [
+        "--apply (optional; default preview; renames a legacy startup101.yaml project to startup-cami.yaml without deleting the legacy file)"
+      ],
+      "key-points-input": [],
+      "set-key-points": [
+        "--file JSON (contains source_sha256)"
+      ]
+    }
+  },
+  "interview_note": {
+    "source": "The AI host submits only an edited, information-rich Traditional Chinese or English note as UTF-8 input. It preserves distinctions, uncertainty, figures, causal reasoning and case differences. The host performs semantic review before writing. Do not submit or create a file containing raw user messages.",
+    "write": "notes[note_id] stores text, question_ids, created_at and content_hash in YAML. note is idempotent only for identical content and associations; mutations use byte-hash CAS.",
+    "language": "The offline OpenCC s2tw check rejects detected Simplified Chinese without rewriting the author's input. Common Traditional variants are preserved. Clearly unrelated scripts are rejected. Semantic language and fidelity remain the facilitator's responsibility.",
+    "progress": "Notes and drafts do not grant acceptance. Packet semantic hash binds full candidate, relevant evidence, question requirements and rules, not the containing YAML byte hash.",
+    "lookup": "inspect.notes maps note IDs to actual text hashes. draft --turn-id links an existing note, optionally its exact contiguous excerpt.",
+    "evaluation": "Native records.packets stores note_spans and source_refs; evaluator transport retains note_turns and original result schema. Confirmed candidate rewrite saves the full answer and creates its packet in one atomic YAML write.",
+    "failure": "On a write failure stop before asking another question. Inspect or recover first and retry with the same note ID."
+  },
+  "result_keys": [
+    "evaluation_id",
+    "question_id",
+    "input_sha256",
+    "candidate_sha256",
+    "rubric_version",
+    "question_requirements_version",
+    "verdict",
+    "scores",
+    "score_reasons",
+    "claims",
+    "blocking_issues",
+    "next_question",
+    "what_changes_verdict",
+    "evaluated_at",
+    "dependencies",
+    "evaluator",
+    "requirements_met"
+  ],
+  "verdict": [
+    "pass",
+    "revise",
+    "needs_context"
+  ],
+  "score_dimensions": [
+    "clarity",
+    "specificity",
+    "relevance",
+    "consistency"
+  ],
+  "score_range": [
+    0,
+    2
+  ],
+  "dependency": {
+    "question_id": "string",
+    "revision": "positive integer",
+    "answer_sha256": "sha256"
+  },
+  "claim": {
+    "text": "string",
+    "evidence_status": [
+      "not_applicable",
+      "hypothesis",
+      "reported",
+      "source_checked",
+      "contradicted"
+    ],
+    "source_refs": "array of existing turn_id or source.id"
+  },
+  "source": {
+    "id": "string",
+    "text": "source excerpt",
+    "checked": "boolean",
+    "url": "optional http/https URL"
+  },
+  "template": {
+    "template_api_version": 1,
+    "version": "string",
+    "entry": "canvas.html.jinja",
+    "document_schema_versions": [
+      2
+    ],
+    "assets": [
+      {
+        "path": "relative path",
+        "sha256": "actual checksum",
+        "required": true
+      }
+    ],
+    "presentation": {
+      "path": "clusters.json",
+      "schema_version": 1,
+      "source_sha256": "pinned catalog file sha256"
+    }
+  },
+  "template_context": {
+    "model": [
+      "project",
+      "categories",
+      "questions",
+      "cautions",
+      "answers",
+      "interviewNotes",
+      "readonly",
+      "source",
+      "template_version",
+      "locale",
+      "clusters",
+      "pendingAnswers",
+      "keyPoints",
+      "next_question_id",
+      "coreMode",
+      "coreContent"
+    ],
+    "interviewNotes": "Read-only YAML notes {id,text,source:note,questionIds}; not completion units.",
+    "model_json": "Markup of serialized model escaped for script embedding; only this preescaped value is trusted",
+    "coreMode": "Optional true when projecting core_canvas; render only active core content, not archived original answers or evaluations."
+  },
+  "effective_status_order": [
+    "unreviewed",
+    "needs_review",
+    "unverifiable",
+    "accepted"
+  ],
+  "portability": "Move startup-cami.yaml as the runtime database. An optional reviewed Markdown authoring file and identity mapping are needed only for explicit core sync; Canvas never reads them directly. Install runtime/templates separately; historical exact-byte archive and records stay inside YAML.",
+  "scope": "No semantic evaluation, network, LLM, web writeback, or automatic catalog upgrade.",
+  "needs_context_scoring": {
+    "scores": null,
+    "score_reasons": null,
+    "rule": "Only needs_context uses null scores; pass/revise must score all dimensions."
+  },
+  "fact_pass_gate": "At least one reported or source_checked claim with existing source_refs; all-hypothesis/not_applicable fact answers cannot pass. Semantic validity remains evaluator responsibility.",
+  "local_view": {
+    "setup": "uv run scripts/setup.py --project PATH --app-dir PATH --port 3010 --locale auto|en|zh-TW [--language-source PATH]",
+    "config": ".startup-cami/view.json (legacy projects: .startup101/view.json); view folder marker startup-cami.local.json (legacy startup101.local.json is read until setup --upgrade replaces it)",
+    "source": "Single startup-cami.yaml via YAML renderer",
+    "transport": "localhost GET /api/canvas; no answer write API",
+    "refresh": "Poll file identity and render only a changed stable snapshot; GET has no file writeback.",
+    "app_asset": "assets/next-app",
+    "runtime_version": "same installed skill copy",
+    "locale": "Persisted setup default and browser display override. In active-core auto setup, use existing project.language rather than archived answers or counting both translations."
+  },
+  "presentation": {
+    "active_mode": "core_canvas when present; otherwise original questions/canvas",
+    "core": {
+      "questions": 20,
+      "categories": 10,
+      "answer_identity": "stable core question ID from explicit source mapping",
+      "progress": "nonempty saved core answers / active core questions; filled is not accepted",
+      "followups": "alternate questions, followups and checks share the same core answer; not independent completion units",
+      "scoring": "no native core EvaluationPacket or accept in this version; do not inherit original scores"
+    },
+    "legacy": {
+      "asset": "canvas categories/cards/cautions in startup-cami.yaml",
+      "card_identity": "lead_question_id",
+      "question_identity": "original question_id unchanged",
+      "progress_denominator": 351,
+      "cards": 132,
+      "other_hand_cards": 19,
+      "cautions": 11,
+      "compatibility": "Complete unique original question membership and category/card cross-references; template API/schema checked.",
+      "scoring": "per original question only; no automatic shared acceptance"
+    }
+  },
+  "review": {
+    "input_keys": [
+      "review_id",
+      "question_id",
+      "input_sha256",
+      "evaluation_ids",
+      "resolution",
+      "resolution_reasons",
+      "reviewed_at"
+    ],
+    "resolution": [
+      "agreed",
+      "unresolved",
+      "unavailable"
+    ],
+    "resolution_reasons": "nonempty array of nonempty strings; substantive agreement remains reviewer responsibility",
+    "evaluation_ids": "zero to two distinct actually recorded evaluation IDs; agreed requires exactly two same-packet passes and distinct normalized evaluator strings",
+    "policy": "packet review_policy defaults single for legacy packets. Critical review policy selected before initial verdict. Single may safely escalate to independent after a borderline verdict: new packet hash requires two fresh recorded passes. Independent cannot downgrade to single across candidate rewrites for the same edited notes. New user turn may choose a new policy. Existing accepted answers are unchanged.",
+    "acceptance": "Independent requires agreed recorded review of exact packet with two distinct normalized evaluator identities and two passing results. Receipt refers to immutable records in the same YAML; no score averaging.",
+    "history": "records.reviews keyed by immutable review_id; question.review refers to selected resolution.",
+    "independence_limit": "Runtime validates recorded identities and result references; cannot authenticate that distinct host agents actually performed independent reasoning."
+  },
+  "decision_assessment": {
+    "input_keys": [
+      "assessment_id",
+      "question_id",
+      "input_sha256",
+      "evaluation_id",
+      "decision",
+      "status",
+      "evidence_refs",
+      "missing_information",
+      "what_changes_verdict",
+      "assessor",
+      "assessed_at"
+    ],
+    "status": [
+      "ready",
+      "not_ready",
+      "unknown"
+    ],
+    "evidence_refs": "existing note turn_id or source.id from referenced recorded packet",
+    "missing_information": "array of nonempty strings, may be empty",
+    "decision": "nonempty contextual decision being considered",
+    "what_changes_verdict": "nonempty text explaining what would change this readiness assessment",
+    "history": "records.decisions keyed by immutable assessment_id; references exact recorded evaluation and packet input hash.",
+    "context": "Freshness derives from current answer/evidence/rules and accepted dependency revisions; unrelated formatting and key points do not invalidate a packet.",
+    "boundary": "Never changes answer text, accepted snapshots, scores or evaluation results.",
+    "freshness": "Stale on candidate/evidence/rules/dependency/provenance mismatch. This is local consistency checking, not authentication against a malicious editor."
+  },
+  "inspect_sidecars": {
+    "reviews": "count plus latest_by_question with current_packet flag",
+    "decisions": "count plus latest_by_question with stale flag; underlying append-only history retained"
+  },
+  "pending_projection": {
+    "field": "pendingAnswers",
+    "identity": "original question_id",
+    "text_source": "questions[question_id].answer, when nonempty and different from accepted_version.answer (or no accepted version).",
+    "roles": [
+      "pending"
+    ],
+    "evaluation": "Null unless semantic packet, current answer, relevant notes/sources, rules, dependencies and result still match.",
+    "progress": "Does not grant acceptance or change scoring"
+  },
+  "key_points": {
+    "storage": "questions[question_id].key_points {items,answer_hash}; accepted snapshot has its own hash-bound copy.",
+    "input_command": "key-points-input",
+    "write_command": "set-key-points --file JSON",
+    "payload": {
+      "source_sha256": "current whole-document hash",
+      "entries": [
+        {
+          "question_id": "original question id",
+          "role": "formal or pending",
+          "source_sha256": "exact source text SHA256",
+          "points": [
+            "faithful short key point"
+          ]
+        }
+      ]
+    },
+    "projection": "keyPoints[question_id][role] contains points and source_sha256 only while source still matches",
+    "invariants": [
+      "No answer, scoring or acceptance changes; the database write revision advances.",
+      "Stale key points never displayed",
+      "AI authors faithful points; runtime does not infer facts",
+      "0–12 unique trimmed nonempty single-line items; empty array records no existing information to post. Per-item 1000-character storage guard is not a writing target or scoring rule. Current native writing uses shared headline validation; legacy historical validator remains unchanged."
+    ],
+    "meaning": "The legacy storage/API name for headlines; headline wording policy is shared with core headlines."
+  },
+  "database": {
+    "file": "startup-cami.yaml",
+    "legacy_file": "startup101.yaml (projects created before the rename). Used in place, with its .startup101/ journal, lock and view.json, only when startup-cami.yaml is absent; both present is rejected without writes. migrate-name --apply publishes the same bytes as startup-cami.yaml and moves the legacy file into .startup-cami/recovery/name-migration-*/.",
+    "state_dir": ".startup-cami/ (legacy projects: .startup101/)",
+    "schema": "templates/startup-cami.schema.json",
+    "source": "All mutable project data and pinned question/rule/canvas snapshots in this file only. Machine lock, recovery journal and local view config are not answer databases.",
+    "current_answer": "Active core: core_canvas.questions[core_id].answer by locale. Otherwise questions[question_id].answer. Original accepted versions remain immutable historical snapshots and are never inherited by merged core claims.",
+    "concurrency": "Every CLI mutation takes a cooperative project lock, validates the caller byte hash and rechecks immediately before atomic replace. External editors do not participate in the lock; the filesystem cannot provide an unconditional multi-writer CAS.",
+    "recovery": "yaml-pending.json contains before/after hashes and complete next bytes. Replay only at exact before bytes, finish at exact after bytes, otherwise preserve both and report conflict.",
+    "format": "Round-trip comments and literal strings; reject duplicate keys, anchors, aliases, tags, merge keys, multiple documents and unknown schema properties."
+  },
+  "migration": {
+    "legacy_module": "legacy_runtime.py used by explicit importer and historical verification only",
+    "native_records": "records packets/evaluations/reviews/decisions/receipts",
+    "historical_records": "records.legacy preserves original structured values and original hashes; legacy_archive preserves exact file bytes. No rescoring or fabricated independent review."
+  },
+  "headlines": {
+    "policy": "rules/Headlines撰寫與核對.md",
+    "templates": [
+      "templates/headlines.md",
+      "templates/headlines.example.md"
+    ],
+    "author": "office derives from the complete answer; facilitator clarifies the answer; evaluator scores supported complete candidates only",
+    "guidance": "Soft length and count guidance is authoritative only in rules/Headlines撰寫與核對.md. Preserve meaning, author-approved wording and qualifications; do not treat suggested ranges as rejection or scoring thresholds.",
+    "structure": "$defs.headline_items: 0–12 unique trimmed nonempty single-line strings, maximum 1000 characters per item, same item counts for the two core locales; never truncate automatically.",
+    "fidelity": "Core locales pair the same claims, strength, qualifications and order; equal item counts alone do not verify translation. Legacy key_points has one items array in the matching full answer language, not two locale arrays; UI locale switching does not translate legacy answers or headlines. Unknown-only content yields no gap sticky.",
+    "progress": "Headlines do not grant acceptance or change the scoring rubric."
+  },
+  "core_sync": {
+    "prefix": "uv run scripts/sync_core.py --project PATH --markdown MARKDOWN_PATH --mapping MAPPING_PATH --expected-source-sha256 SHA256 [--apply]",
+    "mode": "Preview by default; --apply explicitly commits. This is a separate script, not a startup_cami.py subcommand.",
+    "scope": "Bilingual authoring document: ten Cami topics, twenty core questions, alternate questions and followups. Per question, both answer languages may be blank with empty headlines, or both must be filled. Imports cannot clear saved answers. Native scoring is limited to original questions.",
+    "write": "Only active core_canvas and project revision change; original question, record, note, rubric and history domains remain intact. Changed core content appends the previous core snapshot.",
+    "safety": "Cooperative write lock, fresh YAML byte hash, Markdown and mapping source rechecks around encoding, atomic commit, idempotent identical input and conflict rejection. No web writeback.",
+    "legacy_commands": "When core_canvas is active, original question mutation and evaluation commands are blocked; inspect/validate/render/recover remain available.",
+    "progress": "saved/filled only, without acceptance or new scores."
+  },
+  "visual_acceptance": "references/Canvas驗收.md: actual normal and overview screenshots verify white question containers and visible rectangular notes; desktop/mobile reading, update recovery and independent review are required when the relevant rendering path changes."
+}

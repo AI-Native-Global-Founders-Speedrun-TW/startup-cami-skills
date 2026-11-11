@@ -18,18 +18,18 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     web = Path(__file__).resolve().parent
-    locale_dir=Path(__file__).resolve().parents[1]/'.agents/skills/startup101-office/assets/locales'
+    locale_dir=Path(__file__).resolve().parents[1]/'.agents/skills/startup-cami-office/assets/locales'
     translations={locale:json.loads((locale_dir/(locale+'.json')).read_text()) for locale in ('en','zh-TW')}
     payload=json.dumps(translations,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
-    (web/'i18n-data.js').write_text('window.STARTUP101_TRANSLATIONS = '+payload+';\n',encoding='utf8')
+    (web/'i18n-data.js').write_text('window.STARTUP_CAMI_TRANSLATIONS = '+payload+';\n',encoding='utf8')
     cluster_source=locale_dir.parent/'clusters.json'
     clusters=json.loads(cluster_source.read_text())
     cluster_json=json.dumps(clusters,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
-    (web/'clusters-data.js').write_text('window.STARTUP101_CLUSTERS = window.STARTUP101_MODEL?.clusters || '+cluster_json+';\n',encoding='utf8')
+    (web/'clusters-data.js').write_text('window.STARTUP_CAMI_CLUSTERS = window.STARTUP_CAMI_MODEL?.clusters || '+cluster_json+';\n',encoding='utf8')
     html = (web / 'index.html').read_text(encoding='utf-8')
     about = (web / 'offline-about.html').read_text()
     html = html.replace('</body>', about + '</body>')
-    marker = '<!-- STARTUP101_READONLY: only renderer-supplied YAML snapshot data -->\n<script>window.STARTUP101_MODEL = {% endraw %}{{ model_json }}{% raw %};</script>\n<script>window.STARTUP101_LOCALE=window.STARTUP101_MODEL.locale || "en";</script>\n'
+    marker = '<!-- STARTUP_CAMI_READONLY: only renderer-supplied YAML snapshot data -->\n<script>window.STARTUP_CAMI_MODEL = {% endraw %}{{ model_json }}{% raw %};</script>\n<script>window.STARTUP_CAMI_LOCALE=window.STARTUP_CAMI_MODEL.locale || "en";</script>\n'
     html=html.replace('<script src="i18n-data.js"></script>',marker+'<script src="i18n-data.js"></script>')
     for name in ['styles.css', 'art.js', 'data.js', 'i18n-data.js', 'i18n.js', 'clusters-data.js', 'app.js']:
         contents = (web / name).read_text(encoding='utf-8')
@@ -43,7 +43,7 @@ def main():
             html = html.replace(f'<link rel="stylesheet" href="{name}">', '<style>\n' + contents + '\n</style>')
         else:
             html = html.replace(f'<script src="{name}"></script>', '<script>\n' + contents + '\n</script>')
-    if 'window.STARTUP101_MODEL = ' not in html:
+    if 'window.STARTUP_CAMI_MODEL = ' not in html:
         raise ValueError('Could not locate the i18n script insertion point')
     template = '{% raw %}' + html + '{% endraw %}'
     args.output.mkdir(parents=True, exist_ok=True)

@@ -24,7 +24,7 @@
   "cards complete":"張便利貼已完成",
   "incomplete":"題未完成",
 
-  "live answer hint":"唯讀畫面。使用 startup101-office 更新正式 YAML 後，本地畫面會自動更新。通過評估不代表已經獨立查證。",
+  "live answer hint":"唯讀畫面。使用 startup-cami-office 更新正式 YAML 後，本地畫面會自動更新。通過評估不代表已經獨立查證。",
   "live source hash hint":"來源 SHA-256：{sha}。本地畫面會自動讀取 YAML 的變更。",
   "This view only accepts readonly snapshots.":"此畫面只接受唯讀快照。",
   "Question data is missing or malformed.":"問題資料遺失或格式錯誤。",
@@ -88,7 +88,7 @@
   "Example not available yet.": "目前尚無範例。",
   "Recorded answer": "正式記錄的回答",
   "No accepted answer has been recorded in YAML.": "YAML 尚未記錄通過評估的回答。",
-  "Read-only snapshot. Use startup101-office to update the source YAML, then regenerate this view. Accepted does not mean independently verified.": "唯讀畫面。使用 startup101-office 更新正式 YAML，再更新畫面。通過評估不代表已經獨立查證。",
+  "Read-only snapshot. Use startup-cami-office to update the source YAML, then regenerate this view. Accepted does not mean independently verified.": "唯讀畫面。使用 startup-cami-office 更新正式 YAML，再更新畫面。通過評估不代表已經獨立查證。",
   "Current recorded evaluation": "目前記錄的評估",
   "Previous evaluation — no longer current or not verifiable": "先前的評估——已過期或無法驗證",
   "Example": "範例",
@@ -176,7 +176,7 @@
   "evidence attached": "，附有證據",
   "suggested next suffix": "，建議下一題",
   "context copy": "上下文副本",
-  "derived notice": "衍生的唯讀畫面，不是正式的 startup101 YAML。來源變更後請重新產生。",
+  "derived notice": "衍生的唯讀畫面，不是正式的 startup-cami.yaml。來源變更後請重新產生。",
   "Category": "分類",
   "Status": "狀態",
   "catalog preview": "題庫預覽",
@@ -187,7 +187,7 @@
   "Language": "語言"
 };
  const en = {
-  "live answer hint":"Read-only view. Use startup101-office to update the source YAML; this local view updates automatically. Accepted does not mean independently verified.",
+  "live answer hint":"Read-only view. Use startup-cami-office to update the source YAML; this local view updates automatically. Accepted does not mean independently verified.",
   "live source hash hint":"Source SHA-256: {sha}. This local view automatically reads YAML changes.",
   "Illustrative example — not your answer":"Derived example — not your answer or verbatim course content",
   "unexpected counts":"Unexpected counts: {questions} questions, {cautions} counterexamples, {categories} categories.",
@@ -204,11 +204,11 @@
   "evidence attached": ", evidence attached",
   "suggested next suffix": ", suggested next",
   "context copy": "context copy",
-  "derived notice": "Derived read-only view, not the canonical startup101 YAML. Regenerate after source changes."
+  "derived notice": "Derived read-only view, not the canonical startup-cami.yaml. Regenerate after source changes."
 };
- let locale = window.STARTUP101_LOCALE === 'zh-TW' ? 'zh-TW' : 'en';
+ let locale = window.STARTUP_CAMI_LOCALE === 'zh-TW' ? 'zh-TW' : 'en';
  const catalog = () => {
-  const all=window.STARTUP101_TRANSLATIONS || {};
+  const all=window.STARTUP_CAMI_TRANSLATIONS || {};
   return all[locale] || (locale==='zh-TW' && all.questions ? all : {});
  };
  function t(key, vars={}) {
@@ -220,5 +220,5 @@
   ['aria-label','title','placeholder'].forEach(attr=>root.querySelectorAll(`[data-i18n-${attr}]`).forEach(el=>el.setAttribute(attr,t(el.getAttribute(`data-i18n-${attr}`)))));
   document.documentElement.lang=locale;
  }
- window.STUDIO_I18N={t,catalog,staticText,get locale(){return locale;},setLocale(value){locale=value==='zh-TW'?'zh-TW':'en';window.STARTUP101_LOCALE=locale;},uiKeys:Object.keys(zh)};
+ window.STUDIO_I18N={t,catalog,staticText,get locale(){return locale;},setLocale(value){locale=value==='zh-TW'?'zh-TW':'en';window.STARTUP_CAMI_LOCALE=locale;},uiKeys:Object.keys(zh)};
 })();

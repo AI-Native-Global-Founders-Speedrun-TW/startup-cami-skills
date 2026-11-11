@@ -1,12 +1,12 @@
-/* Startup 101 Studio — read-only YAML snapshot.
+/* Cami Startup Canvas — read-only YAML snapshot.
    Vanilla JS, no build step. Data comes from data.js (generated from the question manifest).
-   Source: Startup 101 facilitation canvas */
+   Spec: plans/000-facilitation-canvas/互動Canvas視覺與體驗Spec.md */
 (() => {
   'use strict';
   const I18N=window.STUDIO_I18N, tr=(key,vars)=>I18N.t(key,vars);
-  const isCore = () => window.STARTUP101_MODEL?.coreMode === true;
+  const isCore = () => window.STARTUP_CAMI_MODEL?.coreMode === true;
   const localValue = value => value?.[I18N.locale] ?? value?.en ?? '';
-  const cn=name=>localValue(window.STARTUP101_MODEL?.coreContent?.categories?.[name]) || I18N.catalog().categories?.[name] || name;
+  const cn=name=>localValue(window.STARTUP_CAMI_MODEL?.coreContent?.categories?.[name]) || I18N.catalog().categories?.[name] || name;
   const completed = a => isCore() ? Boolean(a?.text?.trim()) : a?.recordStatus === 'accepted';
   const progressLabel = () => isCore() ? (I18N.locale==='zh-TW'?'已填':'filled') : tr('accepted');
 
@@ -72,7 +72,7 @@
 
   function loadData() {
     try {
-      const model = window.STARTUP101_MODEL;
+      const model = window.STARTUP_CAMI_MODEL;
       const data = window.STUDIO_DATA;
       if (model) {
         if (model.readonly !== true) throw new Error(tr('This view only accepts readonly snapshots.'));
@@ -117,8 +117,8 @@
       <button class="btn btn-ghost" type="button" id="error-summary">${tr("Download error summary")}</button></div>`;
     stage.append(box);
     $('#retry-load').onclick = () => { box.remove(); loadData(true); };
-    $('#error-summary').onclick = () => download('startup101-load-error.txt', 'text/plain',
-      `Startup 101 Studio could not load its questions.\nTime: ${now()}\nPage: ${location.href}\nError: ${err && err.message}\nUser agent: ${navigator.userAgent}\n`);
+    $('#error-summary').onclick = () => download('startup-cami-load-error.txt', 'text/plain',
+      `Cami Startup Canvas could not load its questions.\nTime: ${now()}\nPage: ${location.href}\nError: ${err && err.message}\nUser agent: ${navigator.userAgent}\n`);
   }
 
   // =====================================================================
@@ -137,7 +137,7 @@
     contentCats = D.categories.filter((c) => !c.caution).map((c) => CATS[c.name]);
     restoreVenture();
     applyContentLocale();
-    buildClusters(window.STARTUP101_MODEL?.clusters || window.STARTUP101_CLUSTERS);
+    buildClusters(window.STARTUP_CAMI_MODEL?.clusters || window.STARTUP_CAMI_CLUSTERS);
     routeIds = D.route.map((r) => r.id);
     I18N.staticText();
     S.prefs = readPrefs();
@@ -151,7 +151,7 @@
 
   function buildClusters(asset) {
     if (!asset || !Array.isArray(asset.cards) || (isCore() ? asset.cards.length !== mainQs.length : asset.cards.length !== 132)) throw new Error(tr('Cluster data is missing or incompatible.'));
-    const expected=window.STARTUP101_MODEL ? asset.source_sha256 : asset.source_content_sha256;
+    const expected=window.STARTUP_CAMI_MODEL ? asset.source_sha256 : asset.source_content_sha256;
     if (expected !== D.contentSha256) throw new Error(tr('Cluster data is missing or incompatible.'));
     const seen=new Set();
     CARDS=asset.cards.map(raw=>{
@@ -234,7 +234,7 @@
   }
 
   function savedNotes() {
-    return (window.STARTUP101_MODEL?.interviewNotes || []).filter(note => note.source === 'note');
+    return (window.STARTUP_CAMI_MODEL?.interviewNotes || []).filter(note => note.source === 'note');
   }
 
   function notesFor(questionId) {
@@ -309,9 +309,9 @@
       const original=q._original, localized=translations[q.id] || {};
       for(const key of ['question','help','audience','audienceEn','sourceSection','sourceRange','editorialNote']) q[key]=localized[key] ?? original[key];
       if(isCore())q.question=localValue(original.prompt) || original.question;
-      q.grounding=isCore() ? null : localized.grounding || window.STARTUP101_TRANSLATIONS?.['zh-TW']?.questions?.[q.id]?.grounding || null;
+      q.grounding=isCore() ? null : localized.grounding || window.STARTUP_CAMI_TRANSLATIONS?.['zh-TW']?.questions?.[q.id]?.grounding || null;
     }
-    if(isCore() && S.venture)for(const [id,a] of Object.entries(S.venture.answers))a.text=localValue(window.STARTUP101_MODEL.answers[id]?.textI18n) || window.STARTUP101_MODEL.answers[id]?.text || '';
+    if(isCore() && S.venture)for(const [id,a] of Object.entries(S.venture.answers))a.text=localValue(window.STARTUP_CAMI_MODEL.answers[id]?.textI18n) || window.STARTUP_CAMI_MODEL.answers[id]?.text || '';
   }
   function changeLocale(value) {
     cancelAnim();
@@ -332,7 +332,7 @@
     }
     applyCamera(true); if(selected)setRoving(selected);
     if($('#search-input').value)runSearch();
-    window.parent.postMessage({type:'startup101:locale',locale:I18N.locale},location.origin==='null'?'*':location.origin);
+    window.parent.postMessage({type:'startup-cami:locale',locale:I18N.locale},location.origin==='null'?'*':location.origin);
   }
 
   function startCanvas() {
@@ -343,7 +343,7 @@
     renderProgress();
     measure();
     const pending = progressData(mainQs, S.venture.answers).pending;
-    const next = window.STARTUP101_MODEL && nextIncomplete(pending);
+    const next = window.STARTUP_CAMI_MODEL && nextIncomplete(pending);
     const sel = next?.id || (ui.selectedId && Q[ui.selectedId] && !Q[ui.selectedId].caution ? ui.selectedId : mainQs.find(q=>completed(answerOf(q.id)))?.id || routeIds[0]);
     setRoving(sel);
     if (next) {
@@ -373,7 +373,7 @@
   function scheduleUiSave() {} // Navigation never writes project data.
   function persistIfDirty() {} // Legacy navigation hook; no persistence in a view.
   function restoreVenture() {
-    const m = window.STARTUP101_MODEL || {project:{}, answers:{}, source:{}};
+    const m = window.STARTUP_CAMI_MODEL || {project:{}, answers:{}, source:{}};
     const input = Array.isArray(m.answers) ? Object.fromEntries(m.answers.map(a=>[a.question_id,a])) : m.answers || {};
     const answers = {};
     for (const [id,a] of Object.entries(input)) {
@@ -382,14 +382,14 @@
       const status = ({accepted:'answered',saved:'saved',unreviewed:'draft',needs_review:'revisit',unverifiable:'unverifiable'})[recordStatus] || 'draft';
       answers[id] = {...a, text:a.text || '', status, recordStatus, evidence:(a.claims || []).map(c=>({text:c.text || c.claim || '',state:c.evidence_status || c.status || 'reported',source_refs:c.source_refs || []}))};
     }
-    S.venture = {name:m.project.name || m.project.title || 'Startup 101', answers, ui:{route:{on:false,index:0,branch:null},visited:[],history:[],exampleSeen:{}}};
+    S.venture = {name:m.project.name || m.project.title || 'Cami Startup Canvas', answers, ui:{route:{on:false,index:0,branch:null},visited:[],history:[],exampleSeen:{}}};
     return true;
   }
   function answerOf(id) { return S.venture.answers[id] || {text:'',status:'not-answered',recordStatus:'not-answered',evidence:[],scores:{}}; }
   function updateSaveStatus() {
-    const source=window.STARTUP101_MODEL?.source, e=$('#save-status');
+    const source=window.STARTUP_CAMI_MODEL?.source, e=$('#save-status');
     e.textContent=source ? tr('yaml revision',{revision:source.revision ?? '?'}) : tr('Read-only · Question catalog preview');
-    e.title=source ? tr(window.STARTUP101_LIVE ? 'live source hash hint' : 'source hash hint',{sha:source.sha256 || tr('none')}) : tr('Generate a snapshot from your startup project YAML to see answers.');
+    e.title=source ? tr(window.STARTUP_CAMI_LIVE ? 'live source hash hint' : 'source hash hint',{sha:source.sha256 || tr('none')}) : tr('Generate a snapshot from your startup project YAML to see answers.');
   }
 
 
@@ -413,13 +413,13 @@
     if (button) button.disabled = !previousAnswered();
   }
   function nextIncomplete(pending) {
-    return pending.find(q => q.id === window.STARTUP101_MODEL?.next_question_id) || pending[0];
+    return pending.find(q => q.id === window.STARTUP_CAMI_MODEL?.next_question_id) || pending[0];
   }
   function renderProgress() {
     const p = progressData(mainQs, S.venture.answers);
     const next = nextIncomplete(p.pending);
     $('#progress-summary').classList.toggle('all-filled',!next);
-    const source = window.STARTUP101_MODEL?.source;
+    const source = window.STARTUP_CAMI_MODEL?.source;
     const cardsDone = CARDS.filter(c => cardProgress(c).accepted === c.members.length).length;
     const sourceLabel = source ? tr('yaml revision',{revision:source.revision}) : tr('Catalog preview · no project loaded');
     $('#progress-summary').innerHTML = `
@@ -918,7 +918,7 @@
   function tileEl(id) { return document.getElementById(`t-${CARD_BY_Q[id]?.id || id}`); }
 
   function keyPointRecord(id) {
-    const records=window.STARTUP101_MODEL?.keyPoints?.[id];
+    const records=window.STARTUP_CAMI_MODEL?.keyPoints?.[id];
     if(isCore() && records?.formal)return {...records.formal,points:records.formal.pointsI18n?.[I18N.locale] || records.formal.points,role:'formal'};
     if(!records)return null;
     if(records.points)return records;
@@ -941,7 +941,7 @@
       ? `<div class="keypoint-grid">${points.points.map(point=>`<button type="button" class="keypoint" data-action="goto" data-id="${esc(activeId)}">${esc(point)}</button>`).join('')}</div>${label?`<p class="keypoint-state">${label}</p>`:''}`
       : '';
     b.querySelector('.card-notes').innerHTML=`<button type="button" data-action="goto" data-id="${esc(activeId)}">${I18N.locale==='zh-TW'?'完整答案':'Full answer'}${card.members.length>1?` · ${card.members.length} ${I18N.locale==='zh-TW'?'個相關問題':'related questions'}`:''}</button>`;
-    const marked = stats.pending.find(member => member.id === window.STARTUP101_MODEL?.next_question_id);
+    const marked = stats.pending.find(member => member.id === window.STARTUP_CAMI_MODEL?.next_question_id);
     const missing = marked || stats.pending[0];
     b.classList.toggle('has-next-question', Boolean(marked));
     b.querySelector('.card-missing').textContent = marked ? tr('Next incomplete') : '';
@@ -1147,15 +1147,15 @@
       </div>
       <div class="panel-scroll" id="panel-scroll">
         <h2 class="panel-q" id="panel-q" tabindex="-1">${esc(numberedQuestion(q))}</h2>
-        ${keyPointRecord(id)?.points?.length ? `<div class="panel-keypoints">${keyPointRecord(id).points.map(point=>`<span>${esc(point)}</span>`).join('')}</div>` : ''}${window.STARTUP101_MODEL?.keyPoints?.[id]?.pending?.points?.length && answerOf(id).text ? `<p>${I18N.locale==='zh-TW'?'待評估回答的重點':'Pending answer key points'}</p><div class="panel-keypoints">${window.STARTUP101_MODEL.keyPoints[id].pending.points.map(point=>`<span>${esc(point)}</span>`).join('')}</div>` : ''}
+        ${keyPointRecord(id)?.points?.length ? `<div class="panel-keypoints">${keyPointRecord(id).points.map(point=>`<span>${esc(point)}</span>`).join('')}</div>` : ''}${window.STARTUP_CAMI_MODEL?.keyPoints?.[id]?.pending?.points?.length && answerOf(id).text ? `<p>${I18N.locale==='zh-TW'?'待評估回答的重點':'Pending answer key points'}</p><div class="panel-keypoints">${window.STARTUP_CAMI_MODEL.keyPoints[id].pending.points.map(point=>`<span>${esc(point)}</span>`).join('')}</div>` : ''}
         ${q.question !== q._original.question ? `<details class="original-question"><summary>${tr('Original English question')}</summary><p lang="en">${esc(q._original.question)}</p></details>` : ''}
-        ${a.text || !window.STARTUP101_MODEL?.pendingAnswers?.[id]?.text ? `<section class="answer" aria-label="${tr("Recorded answer")}">
+        ${a.text || !window.STARTUP_CAMI_MODEL?.pendingAnswers?.[id]?.text ? `<section class="answer" aria-label="${tr("Recorded answer")}">
           <h3 class="lbl">${tr('Recorded answer')} · ${esc(tr(STATUS[a.status].label))}</h3>
           <div class="readonly-answer">${a.text ? esc(a.text) : `<em>${isCore() ? (I18N.locale==='zh-TW'?'尚未填答':'No answer yet') : tr("No accepted answer has been recorded in YAML.")}</em>`}</div>
           ${!isCore() && a.scores && Object.keys(a.scores).length ? `<p class="hint">${a.recordStatus === 'accepted' ? tr("Current recorded evaluation") : tr("Previous evaluation \u2014 no longer current or not verifiable")}</p><dl class="score-list">${Object.entries(a.scores).map(([key,value])=>`<dt>${esc(tr(key))}</dt><dd>${esc(typeof value === 'object' ? value.score : value)} / 2</dd>`).join('')}</dl>` : ''}
         </section>` : ''}
-        ${window.STARTUP101_MODEL?.pendingAnswers?.[id]?.text ? `<section class="answer"><h3>${window.STARTUP101_MODEL.pendingAnswers[id].role==='rewrite_needs_save'?(I18N.locale==='zh-TW'?'原回答；改寫尚未保存':'Original answer; rewrite not saved'):window.STARTUP101_MODEL.pendingAnswers[id].role==='history_only'?(I18N.locale==='zh-TW'?'歷史內容':'Historical content'):(I18N.locale==='zh-TW'?'待評估回答':'Pending answer')}</h3><div class="readonly-answer">${esc(window.STARTUP101_MODEL.pendingAnswers[id].text)}</div><p>${esc((window.STARTUP101_MODEL.pendingAnswers[id].evaluation?.blocking_issues || []).map(x=>typeof x==='string'?x:(x.message || x.reason || '')).filter(Boolean).join('\n') || (I18N.locale==='zh-TW'?'尚未通過評估':'Not yet accepted'))}</p></section>` : ''}
-        ${!isCore() ? `<details id="ai-context"><summary id="ai-context-summary">${I18N.locale==='zh-TW'?'繼續與 AI 討論':'Continue with AI'}</summary><p>${I18N.locale==='zh-TW'?'複製以下內容交給 AI：':'Copy this context to your AI:'}</p><textarea id="ai-context-text" aria-label="AI context" readonly rows="6" style="width:100%;box-sizing:border-box">${esc('/startup101-office\nProject: '+JSON.stringify(window.STARTUP101_MODEL?.project || {})+'\nOriginal question ID: '+id+'\nQuestion: '+q._original.question+'\nRevision: '+window.STARTUP101_MODEL?.project?.revision+'\nBody role: '+(window.STARTUP101_MODEL?.pendingAnswers?.[id]?.role || a.recordStatus)+'\nEvaluation: '+JSON.stringify(window.STARTUP101_MODEL?.pendingAnswers?.[id]?.evaluation || null)+'\nReload the latest project YAML and evaluation before continuing this exact question. This copied context may be stale; never accept an answer based on it alone.')}</textarea></details>` : ''}
+        ${window.STARTUP_CAMI_MODEL?.pendingAnswers?.[id]?.text ? `<section class="answer"><h3>${window.STARTUP_CAMI_MODEL.pendingAnswers[id].role==='rewrite_needs_save'?(I18N.locale==='zh-TW'?'原回答；改寫尚未保存':'Original answer; rewrite not saved'):window.STARTUP_CAMI_MODEL.pendingAnswers[id].role==='history_only'?(I18N.locale==='zh-TW'?'歷史內容':'Historical content'):(I18N.locale==='zh-TW'?'待評估回答':'Pending answer')}</h3><div class="readonly-answer">${esc(window.STARTUP_CAMI_MODEL.pendingAnswers[id].text)}</div><p>${esc((window.STARTUP_CAMI_MODEL.pendingAnswers[id].evaluation?.blocking_issues || []).map(x=>typeof x==='string'?x:(x.message || x.reason || '')).filter(Boolean).join('\n') || (I18N.locale==='zh-TW'?'尚未通過評估':'Not yet accepted'))}</p></section>` : ''}
+        ${!isCore() ? `<details id="ai-context"><summary id="ai-context-summary">${I18N.locale==='zh-TW'?'繼續與 AI 討論':'Continue with AI'}</summary><p>${I18N.locale==='zh-TW'?'複製以下內容交給 AI：':'Copy this context to your AI:'}</p><textarea id="ai-context-text" aria-label="AI context" readonly rows="6" style="width:100%;box-sizing:border-box">${esc('/startup-cami-office\nProject: '+JSON.stringify(window.STARTUP_CAMI_MODEL?.project || {})+'\nOriginal question ID: '+id+'\nQuestion: '+q._original.question+'\nRevision: '+window.STARTUP_CAMI_MODEL?.project?.revision+'\nBody role: '+(window.STARTUP_CAMI_MODEL?.pendingAnswers?.[id]?.role || a.recordStatus)+'\nEvaluation: '+JSON.stringify(window.STARTUP_CAMI_MODEL?.pendingAnswers?.[id]?.evaluation || null)+'\nReload the latest project YAML and evaluation before continuing this exact question. This copied context may be stale; never accept an answer based on it alone.')}</textarea></details>` : ''}
         ${notesPanel(id)}
         ${cardMembersHtml(id)}
         ${isCore() ? `<nav class="question-sequence" aria-label="${I18N.locale==='zh-TW'?'答題順序':'Question order'}">${[mainQs[questionNumber(id)-2],mainQs[questionNumber(id)]].map((target,i)=>target?`<button type="button" class="btn btn-ghost" data-action="goto" data-id="${target.id}">${i===0?(I18N.locale==='zh-TW'?'上一題':'Previous'):(I18N.locale==='zh-TW'?'下一題':'Next')} · ${questionNumber(target.id)}</button>`:'').join('')}</nav>` : ''}
@@ -1353,7 +1353,7 @@
     const words = term.split(/\s+/).filter(Boolean);
     const all = D.questions.filter((q0) => {
       const q = Q[q0.id];
-      const hay = `${isCore()?JSON.stringify({prompt:q.prompt,alternateQuestions:q.alternateQuestions,followups:q.followups,headlines:window.STARTUP101_MODEL?.keyPoints?.[q.id]?.formal?.pointsI18n,answer:window.STARTUP101_MODEL?.answers?.[q.id]?.textI18n}):''} ${q.question} ${q._original.question} ${cn(q.category)} ${q.category} ${q.caution ? '' : answerOf(q.id).text}`.toLowerCase().replace(/[’']/g, "'");
+      const hay = `${isCore()?JSON.stringify({prompt:q.prompt,alternateQuestions:q.alternateQuestions,followups:q.followups,headlines:window.STARTUP_CAMI_MODEL?.keyPoints?.[q.id]?.formal?.pointsI18n,answer:window.STARTUP_CAMI_MODEL?.answers?.[q.id]?.textI18n}):''} ${q.question} ${q._original.question} ${cn(q.category)} ${q.category} ${q.caution ? '' : answerOf(q.id).text}`.toLowerCase().replace(/[’']/g, "'");
       return words.every((w) => hay.includes(w.replace(/[’']/g, "'")));
     }).map((q) => Q[q.id]);
     S.searchHits = all;
@@ -1451,7 +1451,7 @@
   }
 
   function toMarkdown(only) {
-    const m=window.STARTUP101_MODEL || {};
+    const m=window.STARTUP_CAMI_MODEL || {};
     let text=`# ${S.venture.name} — ${tr('context copy')}\n\n> ${tr('derived notice')}\n> ${tr('yaml revision',{revision:m.source?.revision ?? tr('catalog preview')})}; SHA-256: ${m.source?.sha256 || tr('none')}.\n\n`;
     for(const {q,a} of exportRows(only)) text+=`## ${q.question}\n\n${tr('Category')}: ${cn(q.category)}\n${tr('Status')}: ${tr(STATUS[a.status].label)}\n\n${a.text || '_'+tr('Not answered')+'_'}\n\n${isCore() ? '' : tr('Source')+': '+q.sourceSection+' — '+q.sourceRange+'\n\n'}`;
     return text;
@@ -1465,7 +1465,7 @@
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
-  const fileStem = () => `startup101-${(S.venture.name || 'venture').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'venture'}-${new Date().toISOString().slice(0, 10)}`;
+  const fileStem = () => `startup-cami-${(S.venture.name || 'venture').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'venture'}-${new Date().toISOString().slice(0, 10)}`;
   const answeredOnly = () => $('#answered-only').checked;
 
   async function copyContext() {

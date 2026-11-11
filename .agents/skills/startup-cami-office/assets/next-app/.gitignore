@@ -1,0 +1,5 @@
+node_modules/
+.next/
+startup-cami.local.json
+# legacy view config from before the rename
+startup-cami.local.json

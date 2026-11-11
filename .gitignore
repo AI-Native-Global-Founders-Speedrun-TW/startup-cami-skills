@@ -4,4 +4,6 @@ __pycache__/
 node_modules/
 .next/
 my-startup/
+startup-cami.local.json
+# legacy view config from before the rename
 startup101.local.json
